@@ -1,0 +1,16 @@
+cmake_minimum_required(VERSION 3.0.0)
+project(ff_flter VERSION 0.1.0)
+
+include(CTest)
+enable_testing()
+
+include_directories ("/home/git/ffmpeg_moc/videoroom/cproject/ch8/ff_filter/include")
+link_directories("/home/git/ffmpeg_moc/videoroom/cproject/ch8/ff_filter/libs")
+target_link_libraries( libavutil, libavcodec)
+add_executable(ff_flter main.c)
+
+set(CPACK_PROJECT_NAME ${PROJECT_NAME})
+set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+include(CPack)
+
+

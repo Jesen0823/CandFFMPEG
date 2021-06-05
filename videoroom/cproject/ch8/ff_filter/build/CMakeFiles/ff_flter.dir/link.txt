@@ -1,0 +1,1 @@
+/usr/bin/gcc-7 -g  -rdynamic CMakeFiles/ff_flter.dir/main.c.o  -o ff_flter  -L/home/git/ffmpeg_moc/videoroom/cproject/ch8/ff_filter/libs 

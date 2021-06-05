@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/git/ffmpeg_moc/videoroom/cproject/ch8/ff_filter/build",
+  "command": "/usr/bin/g++-7    -g   -o CMakeFiles/ff_filter.dir/ff_filter.cpp.o -c /home/git/ffmpeg_moc/videoroom/cproject/ch8/ff_filter/main.c",
+  "file": "/home/git/ffmpeg_moc/videoroom/cproject/ch8/ff_filter/main.c"
+}
+]

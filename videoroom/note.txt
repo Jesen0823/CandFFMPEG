@@ -1,0 +1,371 @@
+https://www.bilibili.com/video/av246031229/
+
+抽取aac:
+ffmpeg -i jina.flv -acodec copy -vn jina.aac
+转换格式：
+ffmpeg -i jina.flv -vcodec copy -f mp4 jina.mp4
+
+抽取h64:
+ffmpeg -i jina.flv -an -vcodec copy jina.h264
+
+裁减尺寸：
+ffmpeg -i jina.flv -vf crop=in_w-520:in_h-230 -c:v libx264 -c:a copy jina_520_230.mp4
+
+截取：
+ffmpeg -i jina.flv -ss 00:00:10 -t 10 jina_10.ts
+
+拼接：txt是文件列表（格式：file:filename,如：ffmpeg -f concat -i concat_demo.txt concat_demo.mp4）
+ffmpeg -f concat -i inputs.txt out.flv
+
+视频转图像：
+ffmpeg -i in.flv -r 1 -f image2 image-%3d.jepg
+
+图片转视频：
+ffmpeg -i image-%3d.jepg out.mp4
+
+直播推流
+ffmpeg -re -i out.mp4 -c copy -f flv rtmp://server/live/streamName
+
+拉流：
+ffmpeg -i rtmp://server/live/streamName -c copy dump.flv
+
+ffmpeg -i rtmp://ns8.indexforce.com/home/mystream -c copy dump.flv
+
+ffmpeg -i rtmp://58.200.131.2:1935/livetv/cctv6 -c copy tv6_lfs.flv
+
+
+
+执行c命令
+clang -g -o test_log test_log.c -I/usr/local/ffmpeg/include -L/usr/local/ffmpeg/lib -l avutil
+或者：
+clang -g -o test_log test_log.c `pkg-config --cflags  --libs libavutil`
+./test_log
+ldd test_log
+如果环境变量不对要配置环境变量
+sudo vim ~/.bashrc
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/ffmpeg/lib/pkgconfig/
+source ~/.bashrc
+
+文件操作：
+avpriv_io_detele
+avpriv_io_move
+
+目录操作：
+avio_open_dir()
+avio_read_dir()
+avio_close_dir()
+
+结构体：
+AVIODirContext 操作目录上下文
+AVIODirEntry 目录项，文件名文件大小等信息
+
+clang -g -o list ffmpeg_list.c `pkg-config --cflags --libs libavformat libavutil`
+
+打印mediainfo信息：mdeiaInfo.c:
+clang -g -o mediaInfo mdeiaInfo.c `pkg-config --cflags --libs libavutil libavformat`
+
+顺序：
+编译自己的程序，链接库的顺序为  -lavcodec -lavdevice -lavfilter -lavformat -lavutil -lpostproc -lswresample -lswscale -lx264 -lm -lrt -lz	
+________________________________________________________________________________________________________________
+$ locate libavutil.pc
+/home/git/ffmpeg_moc/ffmpeg/libavutil/libavutil.pc
+/usr/local/ffmpeg/lib/pkgconfig/libavutil.pc
+/usr/local/ffmpeg/lib/libavcodec.so
+
+/home/git/ffmpeg_moc/ffmpeg/android-build/pkgconfig/armeabi-v7a/libavcodec.pc
+/home/git/ffmpeg_moc/ffmpeg/libavcodec/libavcodec.pc
+/usr/lib/pkgconfig/libavcodec.pc
+/usr/local/ffmpeg/lib/pkgconfig/libavcodec.pc
+/usr/local/lib/pkgconfig/libavcodec.pc
+
+120 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/ffmpeg/lib/pkgconfig
+121 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig
+122 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/lib/pkgconfig
+123 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/ffmpeg/lib/pkgconfig
+
+
+job dir:
+/home/git/ffmpeg_moc/videoroom/cproject/ch5
+
+$ pkg-config --libs sdl2
+-L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags -lSDL2
+$ pkg-config --cflags --libs sdl2
+-D_REENTRANT -I/usr/local/include/SDL2 -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags -lSDL2
+________________________________________________________________________________________________________________
+clang -g -o player5 player5.c `pkg-config --cflags --libs sdl2` -I/usr/local/ffmpeg/include -L/usr/local/ffmpeg/lib /usr/local/ffmpeg/lib/libavutil -l avformat -l avcodec -lswresample -lswscale -lm -lrt -lz
+./player4 dongman30.mp4
+
+clang -g -o player5 player5.c `pkg-config --cflags --libs sdl2` -I/usr/local/include -L/usr/local/lib -l avutil -l avformat -l avcodec -lswresample -lswscale
+
+clang -g -o player5 player5.c `pkg-config --cflags --libs sdl2` -I/usr/local/ffmpeg/include -L/usr/local/ffmpeg/lib -l avutil -l avformat -l avcodec -l swresample -l swscale
+
+
+clang -g -o player2 player2.c `pkg-config --cflags --libs sdl2` -I/usr/local/ffmpeg/include -L/usr/local/ffmpeg/lib -l avutil -l avformat -l avcodec -l swresample -l swscale
+
+______________________________________
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/home/git/ffmpeg_moc/libfdk_aac/lib/pkgconfig
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/ffmpeg/lib/pkgconfig
+export LD_LIBRARY_PATH=$LIB_LIBRARY_PATH:/home/git/ffmpeg_moc/libfdk_aac/lib
+export LD_LIBRARY_PATH=$LIB_LIBRARY_PATH:/usr/local/ffmpeg/lib
+export PKG_CONFIG=/usr/bin/pkg-config
+export PATH=$PATH:/usr/local/ffmpeg/bin
+export PATH=$PATH:/home/jesen/.local/bin
+
+______________________________________
+
+clang -g -o player2 player2.c `pkg-config --cflags --libs sdl2` -I/usr/local/ffmpeg/include -L/usr/local/ffmpeg/lib -l avutil -l avformat -l avcodec -l swscale
+
+clang -g -o player2 player2.c `pkg-config --cflags --libs sdl2 libavutil libavformat libavcodec libswscale`
+
+clang -g -o event_sdl event_sdl.c `pkg-config --cflags --libs sdl2`
+/.event_sdl
+
+clang -g -o first_sdl first_sdl.c `pkg-config --cflags --libs sdl2`
+./first_sdl 
+
+clang -g -o decode_video decode_video.c -I/usr/local/ffmpeg/include -L/usr/local/ffmpeg/lib -l avutil -l avformat -l avcodec -l swscale
+ ./decode_video jina.mp4 ./outpic
+
+clang -g -o encode_video encode_video.c -I/usr/local/ffmpeg/include -L/usr/local/ffmpeg/lib -l avutil -l avformat -l avcodec
+./encode_video 1.h264 libx264
+ffplay 1.h264                                              
+
+clang -g -o extr_audio extr_audio.c -I/usr/local/ffmpeg/include -L/usr/local/ffmpeg/lib -l avutil -l avformat -l avcodec
+./extr_audio jina.mp4 jina.aac 
+
+clang -g -o remuxing remuxing.c -I/usr/local/ffmpeg/include -L/usr/local/ffmpeg/lib -l avutil -l avformat -l avcodec
+clang -g -o remuxing remuxing.c `pkg-config --cflags --libs libavformat`
+./remuxing jina.mp4 remuxing.flv
+
+clang -g -o cutvideo cutvideo.c -I/usr/local/ffmpeg/include -L/usr/local/ffmpeg/lib -l avutil -l avformat -l avcodec
+clang -g -o cutvideo cutvideo.c `pkg-config --libs libavutil libavformat libavcodec`
+./cutvideo 5 10 jina.mp4 cutvideo.mp4
+
+SDL_CreateThread() sdl中创建线程，参数：
+fn :线程执行函数
+name:线程名
+data:执行函数参数
+
+SDL更新纹理：
+SDL_UpdateTexture()
+SDL_UpdateYUVTexture()效率更高
+
+ffmpeg -i dongman.mp4 dongman.yuv
+ffplay -f rawvideo -video_size 1920x1080 -i dongman.yuv
+
+1.mp4转yuv
+# ffmpeg -i guomei.mp4 guomei.yuv
+
+2.播放
+# ffplay -f rawvideo -video_size 864x486 -i guomei.yuv
+注意:必须指定转码之前分辨率分辨率:864x486
+
+３.按时间截取
+前5秒帧视频
+# ffmpeg -ss 00:00:00 -i guomei.mp4 -to 00:00:10 -c copy out05.mp4
+
+抽取pcm:
+$ ffmpeg -i dongman.mp4 -codec:a  pcm_f32le -ar 48000 -ac 2 -f f32le dongman.pcm
+    -ar: 指定采样率;
+    -ac: 指定声道数；
+    -f f32le: 表示每个采样点用32位浮点数来表示（le表示小端，be表示大端）
+播放：
+ffplay -ar 48000 -channels 2 -f f32le -i dongman.pcm
+
+查看文件信息：
+ls -alt dongman.pcm
+批量移动MP4文件：
+ sudo mv *.mp4 /home/jesen/videos/
+采集音频：
+ffmpeg -f alsa -i hw:0,0 xxx.wav
+
+音视频同步本质是线程同步问题
+
+锁的种类：
+读写锁
+自旋锁：等待资源释放，一直等
+可重入锁
+
+SDL创建线程：
+SDL_CreateThread
+SDL_WaitThread
+SDL_CreateMutex/SDL_DestroyMutex 互斥锁
+SDL_LockMutex/SDL_UnlockMutex锁住变量/释放
+SDL_CreateCond/SDL_DestroyCond条件变量
+SDL_CondWait/SDL_CondSignal等待，释放信号量🚥
+
+补充：
+SDL_mutex 互斥量，用于加锁解锁
+SDL——cond 条件变量，用于处理同步
+
+播放器线程模型：
+主线程：处理输入参数，窗口键盘事件，视频渲染
+子线程：子线程1,解复用线程，维护视频流队列和音频流队列
+        子线程2, 视频解码线程，放入解码视频队列，由主线程再输出到视频显卡渲染到屏幕
+	子线程3,打开视频设备的时候，由sdl创建音频渲染线程（音频流队列中的数据渲染到声卡）
+
+音频视频渲染，由主线程通过TIMER回调拿到视频帧再渲染出来
+
+音视频同步：
+分3种：
+1）视频同步到音频（易）
+2）音频同步到视频（难）
+3）音频视频同步到系统时钟
+PTS:Presentation timestamp 渲染时间 
+DTS：Decoding timestamp 解码时间
+
+I/B/P帧
+AVPacket,AVFrame中可以取得PTS, 一般取解码后的AVFrame中的
+av_frame_get_best_effort_timestamp()获取PTS
+
+时间基:
+tbr:帧率
+tbn:time base of stream流的时间基
+tbc:time base of codec解码时间基
+
+计算当前帧的PTS:
+PTS = PTS * av_q2d(video_stream->time_base)
+
+计算下一帧的PTS:
+video_clock:预测的下一帧视频的PTS = frame_delay + PTS(上一帧的)
+frame_delay:1/tbr
+audio_clock:音频当前播放的时间戳
+
+
+解压：sudo tar -xvJf Mojave-dark.tar.xz
+
+终端高逼格屏保
+
+sudo apt install cmatrix
+cmatrix -b
+_____________________________________________
+JNIEnv java的本地化环境，用来访问java对象
+JavaVM 一个进程对应一个JavaVM,用来获取JNIEnv,一个JavaVM有多个线程，每个线程对应一个JNIEnv
+
+c/c++调java方法：
+FindClass
+GetMethodID/GetFieldID
+NewObject创建java对象
+Call<TYPE>Method/[G/S]et<Type>Field调用方法
+——————————————————————————————————————————————
+1.生成交叉编译工具链：
+cd /home/jesen/Android/Sdk/ndk/22.1.7171670/build/tools
+
+./make-standalone-toolchain.sh --toolchain=arm-linux-androideabi-4.9 --platform=android-19 --install-dir=../toolchain/ndk22
+
+cd ../toolchain/ndk22，即 /home/jesen/Android/Sdk/ndk/22.1.7171670/build/toolchain/ndk22
+
+cd bin/
+
+ls 查看交叉编译所需要的工具
+
+cd ../
+cd include
+
+ffmpeg目录：/home/git/ffmpeg_moc/ffmpeg
+添加android编译脚本 build_ffmpeg_for_android.sh
+执行./
+进入/home/git/ffmpeg_moc/ffmpeg/android-build/libs/armeabi-v7a
+ 查看生成产物
+
+2.不使用编译工具链的方式：
+下载 android-ndk-r10e-linux-x86_64.zip 解压为android-ndk-r10e
+cd android-ndk-r10e , /home/Android/android-ndk-r10e
+ 配置环境变量
+#set android NDK environment
+export ANDROID_NDK=/home/Android/android-ndk-r10e
+export PATH=$PATH:$ANDROID_NDK
+进入 /home/Android/android-ndk-r10e/platforms/android-19/arch-arm/usr
+可以看到所有工具
+
+ffmpeg目录：/home/git/ffmpeg_moc/ffmpeg
+添加android编译脚本 build_android.sh
+执行./build_android.sh，当前目录下android目录会生成产物
+
+实际生成产物在 /usr/local/ffmpeg/lib
+
+$ ./build_android.sh
+/home/Android/ndk/android-ndk-r10e/toolchains/arm-linux-androideabi-4.9/prebuilt
+/linux-x86_64/bin/arm-linux-androideabi-gcc is unable to create an executable file.
+C compiler test failed.
+
+If you think configure made a mistake, make sure you are using the latest
+version from Git.  If the latest version fails, report the problem to the
+ffmpeg-user@ffmpeg.org mailing list or IRC #ffmpeg on irc.freenode.net.
+Include the log file "ffbuild/config.log" produced by configure as this will help
+solve the problem.
+Makefile:2: ffbuild/config.mak: 没有那个文件或目录
+Makefile:40: /tools/Makefile: 没有那个文件或目录
+
+
+
+--extra-cflags="-I/usr/local/include" \
+ 18 --extra-ldflags="-L/usr/local/lib" \
+ 19 --pkgconfigdir="/usr/local/lib/pkgconfig" \
+
+
+sudo ./configure --disable-asm
+
+sudo make
+
+sudo make install
+install -d /usr/local/bin
+install x264 /usr/local/bin
+install -d /usr/share/bash-completion/completions
+install -m 644 ./tools/bash-autocomplete.sh /usr/share/bash-completion/completions/x264
+
+
+Unable to create temporary directory in /xxx
+
+Filter原理：
+将压缩后的每一帧数据解码，解码后的音视频数据计算处理，再次进行编码
+ffplay -i jina.mp4 -vf "drawbox=x=20:y=10:w=100:h=120:c=red"
+ffplay -i jina.mp4 -vf "drawbox=20:10:100:120:red"
+
+filter命令规则：
+参数之间  ：
+多个filter串联  ，
+多个filter没有关联 ；
+
+ffplay -i jina.mp4 -vf "movie=./ss.jepg,scale=64:64[wm];[in][wm]overlay=30:10"
+[in]代表每一帧，[wm]代表别名，
+
+ffplay -i jina.mp4 -vf "movie=./ss.jepg,scale=64:64[wm];[in][wm]overlay=30:10,drawbox=20:10:100:120:red"
+
+API方式使用filter:
+设置filter描述符-> 初始化filter->滤镜处理->释放filter资源
+
+filter描述符：
+ffplay -i jina.mp4 -vf "steps=0.5*PTS[v]" speed2.0.mp4
+filter相关结构体：
+1.AVFilter:代表一个滤镜实例
+{
+	const char*name;
+	const char*
+}
+2.AVFilterPad：一个端口，通过它可以知道filter的类型视频/音频
+{
+ const char*name;
+ enumAVMediaType type; // 音频/视频
+ ...
+ 
+ int(*config_props)(AVFilterLink *link);
+
+ int(*filter_frame)(AVFilterLink *link, AVFrame *frame); // 获取视频
+ 
+}
+3.AVFilterLink:级联时候链接两个filter的桥梁
+{
+ AVFilterContext *src; // 输出
+ AVFilterContext *dst; // 输入
+ AVFilterPad *srcpad;
+ AVFilterPad *dstpad;
+
+ AVFilterFormats *in_formats;
+ AVFilterFormats *out_formats;
+}
+4.AVFilterFormat：前后filter格式协商
+
+Androi Log命令：
+adb logcat -v time > D:\\logcat.log
+________________________________________________

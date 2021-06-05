@@ -1,0 +1,162 @@
+vi 命令：
+
+打开test1.c,命令模式下 :sp test2.c  则会新建第二个文件并打开vim多文件模式
+按ctrl + w + 上下导航键，可以在多个文件切换焦点
+
+在test1中命令模式下直接 "9 dd",则第9行前面的函数被剪贴到粘贴板，前往test2.c 命令模式下直接"p"，就会粘贴那个函数。
+
+wqa:把所有文件都保存退出。
+
+C编译：
+
+gcc maxvalue.c 只有一个文件含main()
+
+gcc max.c maxvalue.c -o main.out 两个有关联的文件编译成一个输出
+
+如果显式：
+include "max.c"(关联)
+则：
+gcc maxvalue.c -o main.out
+
+gcc -c max.c -o -max.o
+去掉include "max.c"
+gcc max.o maxvalue.c 
+gcc max.o min.o maxvalue.c
+
+新建max.h min.h文件
+
+test1.c加入方法声明：
+#include "max.h"
+#include "min.h"
+
+.h文件里面放函数声明
+如何防止.h文件引入重复？两种方式：
+1）较新：
+.h文件顶部加入 #pragma once
+2)较旧：
+加入以下内容
+#ifndef_XXX_H
+#define _XXX_H
+
+// 此处声明函数
+
+#endif
+
+新建Makefile编辑,保存退出，执行make
+makefile中 -o maxvalue.out 表示增量编译
+
+新建main.c :
+int main(int argv, char* argc[]){
+	return 0;
+}
+gcc main.c -o main.out && ./main.out
+其中&&链接两条指令
+./main.out ls 只有在return 0 的时候才会继续执行后面的指令
+
+echo $? 可以查看指令执行是否成功， 0成功，其他失败
+
+如果自定义成功的返回码：
+int main(int argv, char* argc[]){
+	return 101;
+}
+则echo $? 返回值是101执行成功， 但是ls不会执行
+
+
+新建main2.c
+cc main2.c -o m2.out && ./m2.out
+打印argv 值为1
+argv表示参数个数，argc[]得到详细参数
+cc main2.c -o m2.out && ./m2.out -k -l -k
+
+./a.out 1>> a.txt
+输出流重定向到文件
+
+ls /etc/| grep ab 管道
+
+C语言编译经过四个阶段 ciso-out：
+1）.c---> .i 预处理: eg. gcc -o main.i main.c -E 只得到预处理的结果
+2）.i---> .s 编译
+3）.s---> .o 汇编
+4）.o---> .out可执行文件 链接
+
+宏：常用字符常量替换
+宏函数：不用指定参数类型，灵活应用
+
+gcc调试：
+关于gdb调试：https://www.cnblogs.com/jasonLiu2018/p/11494214.html
+gcc -g zhizhen.c
+gdb ./a.out
+list
+l
+l
+start
+n
+n
+...
+s
+bt
+p a1
+p &s
+f 1 返回到函数外面
+x/3d 0x7fffffffdab4 显示内存地址|3个|十进制方式显示|从某地址开始
+x/8d 0x7fffffffdab4
+x/12cb 0x7fffffffdac8 显示内存地址|12个|字符方式显示|从某地址开始
+
+函数指针，也可以调用函数，经常用于回调函数
+指针a (*a)指的是指针的值,a+=3表示指针下移3个长度，p[3]也是下移动3个长度
+函数指针 fun  , (*fun)指的是函数，如 (*fun)(3)表示调用函数传参是3
+
+
+
+内存中地址分配可能跟代码不一样，编译器优化把同类型变量地址放在一起，方便程序执行效率
+32位上指针是4个字节，64位指针占8字节
+栈内存，每调用一个函数分配一段栈内存，
+静态变量，常量，全局变量都默认存储在数据段
+
+
+
+
+/home/jesen/AndroidStudioProjects/FFMPEGPlayDemo/app/build/intermediates/cmake/debug/obj/armeabi-v7a/
+/home/jesen/AndroidStudioProjects/FFMPEGPlayDemo/app/src/main/cpp/src/main/jniLibs/armeabi-v7a/
+2021-04-22 18:00:02.521 10044-10044/com.jesen.code.ffmpegplaykot D/MainActivity: getExternalFilesDir->DIRECTORY_MOVIES:%s/storage/emulated/0/Android/data/com.jesen.code.ffmpegplaykot/files/Movies
+2021-04-22 18:00:02.522 10044-10044/com.jesen.code.ffmpegplaykot D/MainActivity: getExternalStorageDirectory->:%s/storage/emulated/0
+
+####################配置YouCompleteMe###############
+gcc升级：
+https://www.cnblogs.com/guochaoxxl/p/11667747.html
+https://www.xampp.cc/archives/7319
+gcc版本切换：https://m.linuxidc.com/Linux/2019-06/159059.htm
+
+cmake:
+https://www.codeleading.com/article/22783963655/
+https://cmake.org/download/
+https://blog.csdn.net/qq_34935373/article/details/90266958
+https://www.cnblogs.com/rxbook/p/11911375.html
+
+YCM:
+https://github.com/LooEv/A-bridge-to-YouCompleteMe
+https://gitee.com/null_694_3232/YouCompleteMe
+https://blog.csdn.net/jasonLee_lijiaqi/article/details/81326793
+
+https://blog.popkx.com/ubuntu-install-youcompleteme-cmake-error-clang-error-lack-of-pyconfig-h-ycmd-server-shut-down/
+
+
+$ sudo vi ma.c
+[sudo] jesen 的密码： 
+处理 /home/jesen/.vim/bundle/newL9/plugin/l9.vim 时发生错误:
+第   40 行:
+E174: Command already exists: add ! to replace it: L9Assert :
+第   89 行:
+E174: Command already exists: add ! to replace it: L9Timer :
+第  100 行:
+E174: Command already exists: add ! to replace it: L9GrepBuffer    call l9#grepBuffers(<q-args>, [bufnr('%')])
+第  104 行:
+E174: Command already exists: add ! to replace it: L9GrepBufferAll call l9#grepBuffers(<q-args>, range(1, bufnr('$')))
+请按 ENTER 或其它命令继续
+
+vim窗口底部：
+NoExtraConfDetected: No .ycm_extra_conf.py file detected, so n13,1         全部
+解决方法1：https://blog.csdn.net/u014070086/article/details/88692896
+解决方法2：locate .ycm_extra_conf.py
+
+比较新的vim教程：https://github.com/wsdjeg/vim-galore-zh_cn

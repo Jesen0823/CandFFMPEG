@@ -1,0 +1,2 @@
+/usr/bin/ar qc libff_filter.a  CMakeFiles/ff_filter.dir/ff_filter.cpp.o
+/usr/bin/ranlib libff_filter.a
