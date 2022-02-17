@@ -3,6 +3,7 @@
 #include <libavutil/log.h>
 #include <libavformat/avio.h>
 #include <libavformat/avformat.h>
+
 #ifndef AV_WB32
 #   define AV_WB32(p, val) do {                 \
         uint32_t d = (val);                     \
@@ -25,9 +26,10 @@ static int alloc_and_copy(AVPacket *out,
         const uint8_t *in, uint32_t in_size)
 {
     uint32_t offset = out->size;
-    uint8_t nal_header_size = 4;
+    uint8_t nal_header_size = offset ？ 3 ： 4;
     int err;
 
+    // 给packet扩容
     err = av_grow_packet(out, sps_pps_size + in_size + nal_header_size);
     if(err < 0)
         return err;
@@ -45,7 +47,7 @@ static int alloc_and_copy(AVPacket *out,
     return 0;
 }
 
-
+// 读取sps和pps
 int h264_extradata_to_annexb(const uint8_t *codec_extradata, const int codec_extradata_size,AVPacket *out_extradata, int padding)
 {
     uint16_t unit_size  = 0;
@@ -64,7 +66,9 @@ int h264_extradata_to_annexb(const uint8_t *codec_extradata, const int codec_ext
     static const uint8_t nalu_header[4] = {0,0,0,1};
    
    // 跳过一个字节，没用
-    extradata++;
+   // extradata++;
+   // 表示编码长度需要字节数
+    int length_size = *(extradata++ & 0x3) + 1;
 
     sps_offset = pps_offset = -1;
 
@@ -80,6 +84,7 @@ int h264_extradata_to_annexb(const uint8_t *codec_extradata, const int codec_ext
     while(unit_nb--){
         int err;
 
+        // AV_RB16函数读取两字节
         unit_size  = AV_RB16(extradata);
         // 加4字节h264的header也就是0001
         total_size += unit_size + 4;
@@ -167,7 +172,7 @@ int h264_mp4toanexb(AVFormatContext *fmt_ctx, AVPacket *in, FILE *dst_fd)
             nal_size = (nal_size << 8) | buf[i];
 
         buf += 4;// 后移4个字节,也就是视频帧长度），从而指向真正的视频帧数据
-        unit_type = *buf & 0x1f; //视频帧的第一个字节里有NAL TYPE
+        unit_type = *buf & 0x1f; //视频帧的第一个字节里后5位，有NAL TYPE，即nal单元的类型
 
         //如果视频帧长度大于从 AVPacket 中读到的数据大小，说明这个数据包肯定是出错了
         if(nal_size > buf_end - buf || nal_size < 0)
