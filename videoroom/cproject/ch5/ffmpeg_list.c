@@ -18,7 +18,7 @@ int main(int argc, char* arvg[])
     }
     while(1)
     {
-        avio_read_dir(ctx, &entry);
+        ret = avio_read_dir(ctx, &entry);
         if(ret < 0)
         {
             av_log(NULL, AV_LOG_ERROR,"Cant read dir:%s\n", av_err2str(ret));
