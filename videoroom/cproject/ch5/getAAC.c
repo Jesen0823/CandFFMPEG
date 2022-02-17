@@ -28,9 +28,10 @@ int main(int argc, char*  argv[])
     dst = argv[2];
     if(!src || !dst){
         av_log(NULL,AV_LOG_ERROR,"src or dst is null.\n");
+        return -1;
     }
 
-
+    // open your video file, the path is from "src"
     ret = avformat_open_input(&fmt_cxt, src,NULL,NULL);
     if(ret < 0){
         av_log(NULL, AV_LOG_ERROR, "Can,t open file:%s\n", av_err2str(ret));
@@ -44,6 +45,7 @@ int main(int argc, char*  argv[])
         return -1;
     }
 
+    // Get info of the video and print them
     av_dump_format(fmt_cxt, 0, src, 0);
 
     //2. get stream 
