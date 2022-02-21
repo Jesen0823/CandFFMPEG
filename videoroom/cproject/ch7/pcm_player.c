@@ -14,10 +14,12 @@ void read_audio_data(void *udata, Uint8 *stream, int len){
         return;
     }
 
+    // 清空SDL缓冲区
     SDL_memset(stream, 0, len);
 
     len = (len < buffer_len) ? len : buffer_len;
     printf("len=%d\n", len);
+    // 将数据喂入声卡
     SDL_MixAudio(stream, audio_pos, len, SDL_MIX_MAXVOLUME);
 
     audio_pos += len;
